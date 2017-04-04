@@ -26,7 +26,7 @@ if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         ?>
             <tr>
-                <td><?=$row['date'];?></td>
+                <td><?=$row['date'];?> <?=date('l',strtotime($row['date']));?></td>
                 <td><?=$row['roster'];?></td>
             </tr>
     <?php
@@ -40,6 +40,8 @@ $conn->close();
 </html>
 <script>
     $(document).ready(function() {
-        $('#example').DataTable();
+        $('#example').DataTable({
+            "pageLength": 50
+        });
     } );
 </script>

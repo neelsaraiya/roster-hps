@@ -1,89 +1,42 @@
 <?php
 
-//  Include PHPExcel_IOFactory
-include 'Classes/PHPExcel/IOFactory.php';
-ini_set('max_execution_time', 300); //300 seconds = 5 minutes
-ini_set('xdebug.max_nesting_level', 40000);
-ini_set('memory_limit','300M');
+include 'functions.php';
 
-
-include 'email.php';
-
-$inputFileName = "./" . $email_number . "-" . $filename;
-$fileloc = 'uploads/'.$inputFileName;
-//  Read your Excel workbook
-try {
-    $inputFileType = PHPExcel_IOFactory::identify($fileloc);
-    $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-    $objReader->setReadDataOnly(true);
-    $objPHPExcel = $objReader->load($fileloc);
-    $objWorksheet = $objPHPExcel->setActiveSheetIndex(1);
-} catch(Exception $e) {
-    die('Error loading file "'.pathinfo($fileloc,PATHINFO_BASENAME).'": '.$e->getMessage());
-}
-
-//  Get worksheet dimensions
-$sheet = $objPHPExcel->getSheet(1);
-$highestRow = $sheet->getHighestRow();
-$highestColumn = $sheet->getHighestColumn();
-
-$startRow = 3775; //Monday April 3 2017
-$count = 1;
 $conn = dbconn();
 $sql = "DELETE FROM timings;";
-$conn->query($sql);
 
-//  Loop through each row of the worksheet in turn
-for ($row = $startRow; $row <= $highestRow; $row++){
-    $filter = 'A' . $row . ':' . 'AA' . $row;
-    //echo $filter;
-    //  Read a row of data into an array
-    $rowData = $sheet->rangeToArray($filter,
-        NULL,
-        TRUE,
-        FALSE);
-    echo "<pre>";
-    $rowData = $rowData[0];
-    $rowData[1] = PHPExcel_Style_NumberFormat::toFormattedString($rowData[1], "YYYY-MM-DD");
-    echo $rowData[0].' '; //day
-    echo $rowData[1].' '; //date
-    echo $rowData[19].' '; //
-    echo "<hr>";
-
-
-
-	$sql = "INSERT INTO timings (date, roster)
-	VALUES ('".$rowData[1]."','".$rowData[19]."')";
-
-	if ($conn->query($sql) === TRUE) {
-	    echo "New record created successfully";
-	} else {
-	    echo "Error: " . $sql . "<br>" . $conn->error;
-	}
-
-    $count++;
-
-//    if($count > 30)
-//        break;
+$sql = "select * from timings  where date >=  CURDATE() order by date asc";
+$result = $conn->query($sql);
+?>
+<script src="https://code.jquery.com/jquery-1.12.4.js" />
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" />
+<link href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+<table id="example" class="display" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Roster</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php
+if ($result->num_rows > 0) {
+    // output data of each row
+    while($row = $result->fetch_assoc()) {
+        ?>
+            <tr>
+                <td><?=$row['date'];?></td>
+                <td><?=$row['roster'];?></td>
+            </tr>
+    <?php
+    }
 }
-
 $conn->close();
-rename($fileloc, "uploads/processed/".$inputFileName);
-
-
-
-function dbconn(){
-	$servername = "localhost";
-	$username = "neelsara_user";
-	$password = "bl*T6T7Z.L;C";
-	$dbname = "neelsara_sivaniroster";
-
-	// Create connection
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	// Check connection
-	if ($conn->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
-	} 
-
-	return $conn;
-}
+?>
+    </tbody>
+</table>
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable();
+    } );
+</script>

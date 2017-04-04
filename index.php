@@ -6,17 +6,17 @@ ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 ini_set('xdebug.max_nesting_level', 40000);
 ini_set('memory_limit','300M');
 
-$inputFileName = "./uploads/" . $email_number . "-" . $filename;
-
+$inputFileName = "./" . $email_number . "-" . $filename;
+$fileloc = 'uploads/'.$inputFileName;
 //  Read your Excel workbook
 try {
-    $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+    $inputFileType = PHPExcel_IOFactory::identify($fileloc);
     $objReader = PHPExcel_IOFactory::createReader($inputFileType);
     $objReader->setReadDataOnly(true);
-    $objPHPExcel = $objReader->load($inputFileName);
+    $objPHPExcel = $objReader->load($fileloc);
     $objWorksheet = $objPHPExcel->setActiveSheetIndex(1);
 } catch(Exception $e) {
-    die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+    die('Error loading file "'.pathinfo($fileloc,PATHINFO_BASENAME).'": '.$e->getMessage());
 }
 
 //  Get worksheet dimensions
@@ -26,6 +26,9 @@ $highestColumn = $sheet->getHighestColumn();
 
 $startRow = 3775; //Monday April 3 2017
 $count = 1;
+$conn = dbconn();
+$sql = "DELETE FROM timings;";
+$conn->query($sql);
 
 //  Loop through each row of the worksheet in turn
 for ($row = $startRow; $row <= $highestRow; $row++){
@@ -45,7 +48,7 @@ for ($row = $startRow; $row <= $highestRow; $row++){
     echo "<hr>";
 
 
-	$conn = dbconn();
+
 	$sql = "INSERT INTO timings (date, roster)
 	VALUES ('".$rowData[1]."','".$rowData[19]."')";
 
@@ -62,6 +65,8 @@ for ($row = $startRow; $row <= $highestRow; $row++){
 }
 
 $conn->close();
+rename($inputFileName, "uploads/processed/".$inputFileName);
+
 
 
 function dbconn(){

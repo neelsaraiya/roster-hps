@@ -65,7 +65,7 @@ for ($row = $startRow; $row <= $highestRow; $row++){
 }
 
 $conn->close();
-rename($inputFileName, "uploads/processed/".$inputFileName);
+rename($fileloc, "uploads/processed/".$inputFileName);
 
 
 

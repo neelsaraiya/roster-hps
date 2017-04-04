@@ -16,8 +16,8 @@ set_time_limit(3000);
 
 /* connect to gmail with your credentials */
 $hostname = '{imap.gmail.com:993/imap/ssl}INBOX';
-$username = 'neelsaraiya@gmail.com'; # e.g somebody@gmail.com
-$password = 'nsGMAIL@!';
+$username = 'sivaniroster@gmail.com'; # e.g somebody@gmail.com
+$password = 'nsROSTER@!';
 
 
 /* try to connect */
@@ -33,7 +33,7 @@ $inbox = imap_open($hostname,$username,$password) or die('Cannot connect to Gmai
 $emails = imap_search($inbox,'SUBJECT "VicTasLocumRoster"');
 
 /* useful only if the above search is set to 'ALL' */
-$max_emails = 3;
+$max_emails = 1;
 
 
 /* if any emails found, iterate through each email */
@@ -129,7 +129,7 @@ if($emails) {
                 /* prefix the email number to the filename in case two emails
                  * have the attachment with the same file name.
                  */
-                $fp = fopen("./" . $email_number . "-" . $filename, "w+");
+                $fp = fopen("./uploads/" . $email_number . "-" . $filename, "w+");
                 fwrite($fp, $attachment['attachment']);
                 fclose($fp);
             }

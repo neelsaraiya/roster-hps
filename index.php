@@ -10,6 +10,7 @@
 include 'Classes/PHPExcel/IOFactory.php';
 ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 ini_set('xdebug.max_nesting_level', 40000);
+ini_set('memory_limit','300M');
 
 $inputFileName = './uploads/VicTasLocumRoster020317.xlsx';
 
@@ -43,15 +44,44 @@ for ($row = $startRow; $row <= $highestRow; $row++){
         FALSE);
     echo "<pre>";
     $rowData = $rowData[0];
-    $rowData[1] = PHPExcel_Style_NumberFormat::toFormattedString($rowData[1], "D/M/YYYY");
-    echo $rowData[0].' ';
-    echo $rowData[1].' ';
-    echo $rowData[19].' ';
+    $rowData[1] = PHPExcel_Style_NumberFormat::toFormattedString($rowData[1], "YYYY-MM-DD");
+    echo $rowData[0].' '; //day
+    echo $rowData[1].' '; //date
+    echo $rowData[19].' '; //
     echo "<hr>";
 
+
+	$conn = dbconn();
+	$sql = "INSERT INTO timings (date, roster)
+	VALUES ('".$rowData[1]."','".$rowData[19]."')";
+
+	if ($conn->query($sql) === TRUE) {
+	    echo "New record created successfully";
+	} else {
+	    echo "Error: " . $sql . "<br>" . $conn->error;
+	}
 
     $count++;
 
     if($count > 30)
         break;
+}
+
+$conn->close();
+
+
+function dbconn(){
+	$servername = "localhost";
+	$username = "neelsara_user";
+	$password = "bl*T6T7Z.L;C";
+	$dbname = "neelsara_sivaniroster";
+
+	// Create connection
+	$conn = new mysqli($servername, $username, $password, $dbname);
+	// Check connection
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	} 
+
+	return $conn;
 }

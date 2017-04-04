@@ -146,4 +146,6 @@ imap_close($inbox);
 
 echo "Done";
 
+include 'index.php';
+
 ?>

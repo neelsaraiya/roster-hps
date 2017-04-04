@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: neelsaraiya
- * Date: 4/04/17
- * Time: 10:14 AM
- */
 
 //  Include PHPExcel_IOFactory
 include 'Classes/PHPExcel/IOFactory.php';
@@ -12,7 +6,7 @@ ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 ini_set('xdebug.max_nesting_level', 40000);
 ini_set('memory_limit','300M');
 
-$inputFileName = './uploads/VicTasLocumRoster020317.xlsx';
+$inputFileName = "./uploads/" . $email_number . "-" . $filename;
 
 //  Read your Excel workbook
 try {

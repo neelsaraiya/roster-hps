@@ -57,8 +57,8 @@ for ($row = $startRow; $row <= $highestRow; $row++){
 
     $count++;
 
-    if($count > 30)
-        break;
+//    if($count > 30)
+//        break;
 }
 
 $conn->close();

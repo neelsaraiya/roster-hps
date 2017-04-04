@@ -1,13 +1,24 @@
 <?php
 
+
+/**
+ *	Gmail attachment extractor.
+ *
+ *	Downloads attachments from Gmail and saves it to a file.
+ *	Uses PHP IMAP extension, so make sure it is enabled in your php.ini,
+ *	extension=php_imap.dll
+ *
+ */
+
+
 set_time_limit(3000);
+
 
 /* connect to gmail with your credentials */
 $hostname = '{imap.gmail.com:993/imap/ssl}INBOX';
 $username = 'sivaniroster@gmail.com'; # e.g somebody@gmail.com
 $password = 'nsROSTER@!';
 
-include 'email.php';
 
 /* try to connect */
 $inbox = imap_open($hostname,$username,$password) or die('Cannot connect to Gmail: ' . imap_last_error());

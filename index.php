@@ -6,6 +6,9 @@ ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 ini_set('xdebug.max_nesting_level', 40000);
 ini_set('memory_limit','300M');
 
+
+include 'email.php';
+
 $inputFileName = "./" . $email_number . "-" . $filename;
 $fileloc = 'uploads/'.$inputFileName;
 //  Read your Excel workbook

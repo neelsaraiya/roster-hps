@@ -10,7 +10,7 @@ $result = $conn->query($sql);
 <html>
 <script src="https://code.jquery.com/jquery-1.12.4.js" ></script>
 <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" ></script>
-<link href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css"  href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" />
 <body>
 <table id="example" class="display" cellspacing="0" width="100%">
     <thead>
